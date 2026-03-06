@@ -25,7 +25,20 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
     int dinosaurY = boardHeight - dinosaurHeight;
 
     Block dinosaur;
+
+    int cactus1Width = 34;
+    int cactus2Width = 69;
+    int cactus3Width = 103;
+
+    int cactusHeight = 70;
+    int cactusX = 700;
+    int cactusY = boardHeight-cactusHeight;
+
+    ArrayList<Block> cactusArray= new ArrayList<>();
+
+
     Timer gameLoop;
+    Timer placeCactusTimer;
 
     int velocityX =0;
     int velocityY =0;
@@ -53,6 +66,34 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
         gameLoop = new Timer(1000/60, this);
         gameLoop.start();
 
+
+        Timer placeCactusTimer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                placeCactus();
+                repaint();
+            }
+        });
+        placeCactusTimer.start();
+
+
+    }
+    public void placeCactus(){
+
+        double placeCactusChance = Math.random();
+
+        if(placeCactusChance <0.90){
+            Block cactusAffiche = new Block(cactus3,cactusX,cactusY,cactusHeight,cactus3Width);
+            cactusArray.add(cactusAffiche);
+        }
+        if(placeCactusChance >0.60){
+            Block cactusAffiche = new Block(cactus3,cactusX,cactusY,cactusHeight,cactus3Width);
+            cactusArray.add(cactusAffiche);
+        }
+        else{
+            Block cactusAffiche = new Block(cactus3,cactusX,cactusY,cactusHeight,cactus3Width);
+            cactusArray.add(cactusAffiche);
+        }
 
     }
 
@@ -92,8 +133,8 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
     public void keyPressed(KeyEvent e) {
 
         if(e.getKeyCode()==KeyEvent.VK_UP){
-                velocityY=-17;
-                dinosaur.image = dinosaurJumpImage;
+                velocityY=(dinosaur.y==dinosaurY)?-17:0;
+                dinosaur.image = (dinosaur.y<=dinosaurY)?dinosaurJumpImage:dinosaurImage;
             }
         if(e.getKeyCode()==KeyEvent.VK_DOWN){}
         if(e.getKeyCode()==KeyEvent.VK_RIGHT){}
@@ -112,6 +153,12 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
     public void draw(Graphics g){
 
         g.drawImage(dinosaur.image,dinosaur.x,dinosaur.y,dinosaur.blockHeight, dinosaur.blockHeight,null);
+
+        for(Block cactus:cactusArray) {
+
+            g.drawImage(cactus.image,cactus.x,cactus.y,cactus.blockHeight, cactus.blockHeight,null);
+        }
+
     }
     public void move(){
         dinosaur.y += velocityY;

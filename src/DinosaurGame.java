@@ -8,6 +8,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
 
     int boardWidth = 750;
     int boardHeight = 250;
+    int score =0;
 
     int gravity = 2;
 
@@ -54,7 +55,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
     public DinosaurGame(){
 
         setPreferredSize(new Dimension(this.boardWidth,this.boardHeight));
-        setBackground(Color.BLACK);
+        setBackground(Color.GRAY);
         setFocusable(true);
         addKeyListener(this);
 
@@ -103,6 +104,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
             cactusArray.add(cactusAffiche);
         }
 
+
     }
 
 
@@ -132,6 +134,10 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
     public void actionPerformed(ActionEvent e) {
         move();
         repaint();
+        if (gameOver) {
+            placeCactusTimer.stop();
+            gameLoop.stop();
+        }
 
     }
     @Override
@@ -168,6 +174,14 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
             g.drawImage(cactus.image,cactus.x,cactus.y,cactus.blockHeight, cactus.blockHeight,null);
 
         }
+        g.setColor(Color.black);
+        g.setFont(new Font("Courier", Font.PLAIN, 32));
+        if (gameOver) {
+            g.drawString("Game Over: " + String.valueOf(score), 10, 35);
+        }
+        else {
+            g.drawString(String.valueOf(score), 10, 35);
+        }
 
 
     }
@@ -193,7 +207,8 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
             for (Block cactus : cactusArray) {
                 if(!collision(cactus,dinosaur)) {
                     cactus.x -= cactusVelocity;
-
+                    if(dinosaur.x>cactus.x+cactus.blockWidth){
+                    }
                 }
                 else{
                     dinosaur.image=dinosaurDeadImage;
@@ -201,6 +216,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener{
                 }
 
             }
+        score++;
 
         }
     }

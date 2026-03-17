@@ -1,26 +1,17 @@
-import javax.swing.*;
-import java.awt.*;
+import dino.GamePanel;
+import javax.swing.JFrame;
 
 public class App {
-    public static void main(String[] args){
-
-        int boardWidth = 750;
-        int boardHeight = 250;
-
-        JFrame frame = new JFrame("Dinosaur Game.");
-        frame.setSize(new Dimension(boardWidth ,boardHeight));
-
-        frame.setResizable(false);
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Dinosaur Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
 
-        frame.setLocationRelativeTo(null);
-        DinosaurGame dinosaurGame = new DinosaurGame();
-
-        frame.add(dinosaurGame);
+        GamePanel panel = new GamePanel();
+        frame.add(panel);
         frame.pack();
-        dinosaurGame.requestFocus();
+        panel.requestFocus();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-
     }
 }

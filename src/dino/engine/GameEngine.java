@@ -68,7 +68,8 @@ public class GameEngine {
         duckGroundY     = GameConstants.BOARD_HEIGHT - GameConstants.DINO_DUCK_HEIGHT;
 
         dinosaur = new Block(runFrames[0], GameConstants.DINO_X, dinosaurGroundY,
-                             GameConstants.DINO_WIDTH, GameConstants.DINO_HEIGHT);
+                             GameConstants.DINO_WIDTH, GameConstants.DINO_HEIGHT)
+                       .withHitbox(15, 5);
         reset();
     }
 
@@ -80,6 +81,7 @@ public class GameEngine {
         dinosaur.y      = dinosaurGroundY;
         dinosaur.width  = GameConstants.DINO_WIDTH;
         dinosaur.height = GameConstants.DINO_HEIGHT;
+        dinosaur.withHitbox(15, 5);
         trackX1  = 0;
         trackX2  = GameConstants.BOARD_WIDTH;
         velocityY = 0;
@@ -109,6 +111,7 @@ public class GameEngine {
         dinosaur.width  = GameConstants.DINO_DUCK_WIDTH;
         dinosaur.height = GameConstants.DINO_DUCK_HEIGHT;
         dinosaur.y      = duckGroundY;
+        dinosaur.withHitbox(20, 10);
     }
 
     public void stopDucking() {
@@ -117,6 +120,7 @@ public class GameEngine {
         dinosaur.width  = GameConstants.DINO_WIDTH;
         dinosaur.height = GameConstants.DINO_HEIGHT;
         dinosaur.y      = dinosaurGroundY;
+        dinosaur.withHitbox(15, 5);
     }
 
     public void move() {
@@ -212,9 +216,10 @@ public class GameEngine {
             GameConstants.BOARD_HEIGHT - GameConstants.BIRD_H - 70,
             GameConstants.BOARD_HEIGHT - GameConstants.BIRD_H - 120
         };
-        int y    = heights[(int)(Math.random() * heights.length)];
-        Block b  = new Block(birdFrames[0], GameConstants.BOARD_WIDTH, y,
-                             GameConstants.BIRD_W, GameConstants.BIRD_H);
+        int y   = heights[(int)(Math.random() * heights.length)];
+        Block b = new Block(birdFrames[0], GameConstants.BOARD_WIDTH, y,
+                            GameConstants.BIRD_W, GameConstants.BIRD_H)
+                      .withHitbox(15, 15);
         b.animFrame = 0;
         obstacles.add(b);
     }
@@ -222,22 +227,22 @@ public class GameEngine {
     private void spawnSmallCactus(double r) {
         int groundY = GameConstants.BOARD_HEIGHT - GameConstants.CACTUS_H;
         if (r < 0.33) {
-            obstacles.add(new Block(cactus1, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS1_W, GameConstants.CACTUS_H));
+            obstacles.add(new Block(cactus1, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS1_W, GameConstants.CACTUS_H).withHitbox(5, 5));
         } else if (r < 0.66) {
-            obstacles.add(new Block(cactus2, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS2_W, GameConstants.CACTUS_H));
+            obstacles.add(new Block(cactus2, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS2_W, GameConstants.CACTUS_H).withHitbox(5, 5));
         } else {
-            obstacles.add(new Block(cactus3, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS3_W, GameConstants.CACTUS_H));
+            obstacles.add(new Block(cactus3, GameConstants.BOARD_WIDTH, groundY, GameConstants.CACTUS3_W, GameConstants.CACTUS_H).withHitbox(5, 5));
         }
     }
 
     private void spawnBigCactus(double r) {
         int groundY = GameConstants.BOARD_HEIGHT - GameConstants.BIG_CACTUS_H;
         if (r < 0.33) {
-            obstacles.add(new Block(bigCactus1, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS1_W, GameConstants.BIG_CACTUS_H));
+            obstacles.add(new Block(bigCactus1, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS1_W, GameConstants.BIG_CACTUS_H).withHitbox(8, 5));
         } else if (r < 0.66) {
-            obstacles.add(new Block(bigCactus2, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS2_W, GameConstants.BIG_CACTUS_H));
+            obstacles.add(new Block(bigCactus2, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS2_W, GameConstants.BIG_CACTUS_H).withHitbox(8, 5));
         } else {
-            obstacles.add(new Block(bigCactus3, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS3_W, GameConstants.BIG_CACTUS_H));
+            obstacles.add(new Block(bigCactus3, GameConstants.BOARD_WIDTH, groundY, GameConstants.BIG_CACTUS3_W, GameConstants.BIG_CACTUS_H).withHitbox(8, 5));
         }
     }
 

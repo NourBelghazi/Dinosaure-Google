@@ -8,18 +8,34 @@ public class Block {
     public int x, y, width, height;
     public int animFrame = -1;
 
+    public int hx, hy, hw, hh;
+
     public Block(Image image, int x, int y, int width, int height) {
         this.image = image;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.hx = 0;
+        this.hy = 0;
+        this.hw = width;
+        this.hh = height;
+    }
+
+    public Block withHitbox(int insetX, int insetY) {
+        this.hx = insetX;
+        this.hy = insetY;
+        this.hw = width  - insetX * 2;
+        this.hh = height - insetY * 2;
+        return this;
     }
 
     public static boolean collides(Block a, Block b) {
-        return a.x < b.x + b.width  - 5 &&
-               b.x < a.x + a.width  - 5 &&
-               a.y < b.y + b.height - 5 &&
-               b.y < a.y + a.height - 5;
+        int ax = a.x + a.hx, ay = a.y + a.hy;
+        int bx = b.x + b.hx, by = b.y + b.hy;
+        return ax < bx + b.hw &&
+               bx < ax + a.hw &&
+               ay < by + b.hh &&
+               by < ay + a.hh;
     }
 }

@@ -17,16 +17,20 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     static final int CACTUS_H = 70;
     static final int BIG_CACTUS1_W = 49, BIG_CACTUS2_W = 98, BIG_CACTUS3_W = 147;
     static final int BIG_CACTUS_H = 100;
+    static final int BIRD_W = 92, BIRD_H = 80;
     static final int TRACK_HEIGHT = 26;
     static final int CLOUD_W = 92, CLOUD_H = 28;
     static final int GAME_OVER_W = 382, GAME_OVER_H = 21;
     static final int RESET_W = 36, RESET_H = 32;
     static final int ANIM_PERIOD = 8;
+    static final int INITIAL_SPEED = 8;
+    static final int MAX_SPEED = 20;
 
     private Image[] runFrames;
     private Image dinosaurDeadImage;
     private Image dinosaurJumpImage;
     private Image[] duckFrames;
+    private Image[] birdFrames;
     private Image cactus1Img, cactus2Img, cactus3Img;
     private Image bigCactus1Img, bigCactus2Img, bigCactus3Img;
     private Image trackImg;
@@ -48,7 +52,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     Timer placeObstacleTimer;
 
     int velocityY = 0;
-    int speed = 8;
+    int speed = INITIAL_SPEED;
     int score = 0;
     int highScore = 0;
     boolean gameOver = false;
@@ -70,6 +74,10 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
         duckFrames = new Image[]{
             new ImageIcon(getClass().getResource("./images/dino-duck1.png")).getImage(),
             new ImageIcon(getClass().getResource("./images/dino-duck2.png")).getImage()
+        };
+        birdFrames = new Image[]{
+            new ImageIcon(getClass().getResource("./images/bird1.png")).getImage(),
+            new ImageIcon(getClass().getResource("./images/bird2.png")).getImage()
         };
         cactus1Img = new ImageIcon(getClass().getResource("./images/cactus1.png")).getImage();
         cactus2Img = new ImageIcon(getClass().getResource("./images/cactus2.png")).getImage();
@@ -102,6 +110,14 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     void placeObstacle() {
         if (gameOver) return;
         double r = Math.random();
+        if (score > 500 && r < 0.25) {
+            int[] birdHeights = {BOARD_HEIGHT - BIRD_H - 20, BOARD_HEIGHT - BIRD_H - 70, BOARD_HEIGHT - BIRD_H - 120};
+            int y = birdHeights[(int)(Math.random() * birdHeights.length)];
+            Block bird = new Block(birdFrames[0], BOARD_WIDTH, y, BIRD_W, BIRD_H);
+            bird.animFrame = 0;
+            obstacles.add(bird);
+            return;
+        }
         boolean big = Math.random() < 0.3;
         if (big) {
             if (r < 0.33) {
@@ -133,7 +149,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
         trackX1 = 0;
         trackX2 = BOARD_WIDTH;
         velocityY = 0;
-        speed = 8;
+        speed = INITIAL_SPEED;
         score = 0;
         gameOver = false;
         isDucking = false;
@@ -146,6 +162,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     static class Block {
         Image image;
         int x, y, width, height;
+        int animFrame = -1;
 
         Block(Image image, int x, int y, int width, int height) {
             this.image = image;
@@ -246,6 +263,7 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
         if (gameOver) return;
 
         animTick++;
+        speed = Math.min(INITIAL_SPEED + score / 500, MAX_SPEED);
 
         trackX1 -= speed;
         trackX2 -= speed;
@@ -279,6 +297,10 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
         ArrayList<Block> toRemove = new ArrayList<>();
         for (Block obs : obstacles) {
             obs.x -= speed;
+            if (obs.animFrame >= 0) {
+                obs.animFrame = (animTick / ANIM_PERIOD) % 2;
+                obs.image = birdFrames[obs.animFrame];
+            }
             if (collision(obs, dinosaur)) {
                 dinosaur.image = dinosaurDeadImage;
                 gameOver = true;

@@ -10,18 +10,23 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     static final int GRAVITY = 2;
     static final int DINO_WIDTH = 88;
     static final int DINO_HEIGHT = 94;
+    static final int DINO_DUCK_WIDTH = 118;
+    static final int DINO_DUCK_HEIGHT = 60;
     static final int DINO_X = 50;
     static final int CACTUS1_W = 34, CACTUS2_W = 69, CACTUS3_W = 103;
     static final int CACTUS_H = 70;
+    static final int ANIM_PERIOD = 8;
 
-    private Image dinosaurRunImage;
+    private Image[] runFrames;
     private Image dinosaurDeadImage;
     private Image dinosaurJumpImage;
+    private Image[] duckFrames;
     private Image cactus1Img;
     private Image cactus2Img;
     private Image cactus3Img;
 
     int dinosaurGroundY;
+    int duckGroundY;
     Block dinosaur;
 
     ArrayList<Block> obstacles = new ArrayList<>();
@@ -34,6 +39,8 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     int score = 0;
     int highScore = 0;
     boolean gameOver = false;
+    boolean isDucking = false;
+    int animTick = 0;
 
     public DinosaurGame() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -41,15 +48,23 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
         setFocusable(true);
         addKeyListener(this);
 
-        dinosaurRunImage = new ImageIcon(getClass().getResource("./images/dino-run.gif")).getImage();
+        runFrames = new Image[]{
+            new ImageIcon(getClass().getResource("./images/dino-run1.png")).getImage(),
+            new ImageIcon(getClass().getResource("./images/dino-run2.png")).getImage()
+        };
         dinosaurDeadImage = new ImageIcon(getClass().getResource("./images/dino-dead.png")).getImage();
         dinosaurJumpImage = new ImageIcon(getClass().getResource("./images/dino-jump.png")).getImage();
+        duckFrames = new Image[]{
+            new ImageIcon(getClass().getResource("./images/dino-duck1.png")).getImage(),
+            new ImageIcon(getClass().getResource("./images/dino-duck2.png")).getImage()
+        };
         cactus1Img = new ImageIcon(getClass().getResource("./images/cactus1.png")).getImage();
         cactus2Img = new ImageIcon(getClass().getResource("./images/cactus2.png")).getImage();
         cactus3Img = new ImageIcon(getClass().getResource("./images/cactus3.png")).getImage();
 
         dinosaurGroundY = BOARD_HEIGHT - DINO_HEIGHT;
-        dinosaur = new Block(dinosaurRunImage, DINO_X, dinosaurGroundY, DINO_WIDTH, DINO_HEIGHT);
+        duckGroundY = BOARD_HEIGHT - DINO_DUCK_HEIGHT;
+        dinosaur = new Block(runFrames[0], DINO_X, dinosaurGroundY, DINO_WIDTH, DINO_HEIGHT);
 
         gameLoop = new Timer(1000 / 60, this);
         placeObstacleTimer = new Timer(1500, e -> placeObstacle());
@@ -100,15 +115,36 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     }
 
     @Override public void keyTyped(KeyEvent e) {}
-    @Override public void keyReleased(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            stopDucking();
+        }
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (gameOver) return;
-        if (e.getKeyCode() == KeyEvent.VK_UP && dinosaur.y == dinosaurGroundY) {
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_UP && dinosaur.y == dinosaurGroundY && !isDucking) {
             velocityY = -17;
             dinosaur.image = dinosaurJumpImage;
         }
+        if (key == KeyEvent.VK_DOWN && dinosaur.y == dinosaurGroundY) {
+            isDucking = true;
+            dinosaur.width = DINO_DUCK_WIDTH;
+            dinosaur.height = DINO_DUCK_HEIGHT;
+            dinosaur.y = duckGroundY;
+        }
+    }
+
+    void stopDucking() {
+        if (!isDucking) return;
+        isDucking = false;
+        dinosaur.width = DINO_WIDTH;
+        dinosaur.height = DINO_HEIGHT;
+        dinosaur.y = dinosaurGroundY;
     }
 
     @Override
@@ -134,13 +170,22 @@ public class DinosaurGame extends JPanel implements ActionListener, KeyListener 
     void move() {
         if (gameOver) return;
 
+        animTick++;
+        int groundY = isDucking ? duckGroundY : dinosaurGroundY;
+
         dinosaur.y += velocityY;
-        if (dinosaur.y < dinosaurGroundY) {
+        if (dinosaur.y < groundY) {
             velocityY += GRAVITY;
         } else {
-            dinosaur.y = dinosaurGroundY;
+            dinosaur.y = groundY;
             velocityY = 0;
-            dinosaur.image = dinosaurRunImage;
+            if (!gameOver) {
+                if (isDucking) {
+                    dinosaur.image = duckFrames[(animTick / ANIM_PERIOD) % 2];
+                } else {
+                    dinosaur.image = runFrames[(animTick / ANIM_PERIOD) % 2];
+                }
+            }
         }
 
         ArrayList<Block> toRemove = new ArrayList<>();

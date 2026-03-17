@@ -69,7 +69,7 @@ public class GameEngine {
 
         dinosaur = new Block(runFrames[0], GameConstants.DINO_X, dinosaurGroundY,
                              GameConstants.DINO_WIDTH, GameConstants.DINO_HEIGHT)
-                       .withHitbox(15, 5);
+                       .withHitbox(20, 38, 48, 56);
         reset();
     }
 
@@ -81,7 +81,7 @@ public class GameEngine {
         dinosaur.y      = dinosaurGroundY;
         dinosaur.width  = GameConstants.DINO_WIDTH;
         dinosaur.height = GameConstants.DINO_HEIGHT;
-        dinosaur.withHitbox(15, 5);
+        dinosaur.withHitbox(20, 38, 48, 56);
         trackX1  = 0;
         trackX2  = GameConstants.BOARD_WIDTH;
         velocityY = 0;
@@ -111,7 +111,7 @@ public class GameEngine {
         dinosaur.width  = GameConstants.DINO_DUCK_WIDTH;
         dinosaur.height = GameConstants.DINO_DUCK_HEIGHT;
         dinosaur.y      = duckGroundY;
-        dinosaur.withHitbox(20, 10);
+        dinosaur.withHitbox(20, 10, 78, 40);
     }
 
     public void stopDucking() {
@@ -120,7 +120,7 @@ public class GameEngine {
         dinosaur.width  = GameConstants.DINO_WIDTH;
         dinosaur.height = GameConstants.DINO_HEIGHT;
         dinosaur.y      = dinosaurGroundY;
-        dinosaur.withHitbox(15, 5);
+        dinosaur.withHitbox(20, 38, 48, 56);
     }
 
     public void move() {

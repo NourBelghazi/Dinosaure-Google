@@ -30,6 +30,14 @@ public class Block {
         return this;
     }
 
+    public Block withHitbox(int hx, int hy, int hw, int hh) {
+        this.hx = hx;
+        this.hy = hy;
+        this.hw = hw;
+        this.hh = hh;
+        return this;
+    }
+
     public static boolean collides(Block a, Block b) {
         int ax = a.x + a.hx, ay = a.y + a.hy;
         int bx = b.x + b.hx, by = b.y + b.hy;

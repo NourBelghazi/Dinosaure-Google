@@ -25,7 +25,7 @@ public final class GameConstants {
     public static final int RESET_W = 36,      RESET_H     = 32;
 
     public static final int GRAVITY      = 2;
-    public static final int JUMP_VELOCITY = -17;
+    public static final int JUMP_VELOCITY = -22;
     public static final int INITIAL_SPEED = 8;
     public static final int MAX_SPEED     = 20;
     public static final int ANIM_PERIOD   = 8;
